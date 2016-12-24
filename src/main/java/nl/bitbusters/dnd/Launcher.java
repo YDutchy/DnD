@@ -47,5 +47,9 @@ public class Launcher extends Application {
     public static BorderPane getRootLayout() {
         return rootLayout;
     }
+    
+    public static Stage getStage() {
+        return primaryStage;
+    }
 
 }
