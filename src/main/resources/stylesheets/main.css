@@ -1,3 +1,68 @@
 .gamePanel {
 	-fx-background-color: #3E2723;
 }
+
+.table-view {
+	-fx-background-color: #006064;
+	-fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+	-fx-table-cell-border-color: #006064;
+    -fx-table-header-border-color: transparent;
+
+    -fx-control-inner-background: #00838F;
+    -fx-accent: #263238;
+    -fx-cell-hover-color: #CFD8DC;
+}
+
+.table-view .arrow {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: " ";
+}
+
+.table-view .column-header {
+    -fx-background-color: #006064;
+	-fx-border-width: 1px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+}
+
+.table-row-cell {
+	-fx-font-size: 14px;
+	-fx-text-fill: white;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+
+.table-row-cell:focused {
+	-fx-background-color: #0097A7;
+	-fx-border-width: 0px;
+	-fx-text-fill: white;
+}
+
+.table-row-cell:current {
+	-fx-background-color: #00B8D4;
+	-fx-border-width: 0px;
+	-fx-text-fill: white;
+}
+
+.table-row-cell:selected {
+	-fx-background-color: #0097A7;
+	-fx-border-width: 0px;
+	-fx-text-fill: white;
+	-fx-text-background-color: white;
+}
+
+.table-view .scroll-bar:horizontal .increment-arrow,
+.table-view .scroll-bar:horizontal .decrement-arrow,
+.table-view .scroll-bar:horizontal .increment-button,
+.table-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}
