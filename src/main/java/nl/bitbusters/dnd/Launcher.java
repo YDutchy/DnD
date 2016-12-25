@@ -28,10 +28,10 @@ public class Launcher extends Application {
         primaryStage = stage;
         primaryStage.setTitle("DnD Application");
         primaryStage.minWidthProperty().set(1337);
-        primaryStage.minHeightProperty().set(800);
+        primaryStage.minHeightProperty().set(900);
         
         rootLayout = FXMLLoader.load(getClass().getResource("view/main.fxml"));
-        primaryStage.setScene(new Scene(rootLayout, 1337, 800));
+        primaryStage.setScene(new Scene(rootLayout, 1337, 900));
         primaryStage.setOnCloseRequest(e -> close());
         primaryStage.sizeToScene();
         primaryStage.show();

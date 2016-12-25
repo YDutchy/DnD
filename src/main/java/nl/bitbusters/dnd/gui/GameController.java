@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -24,25 +23,28 @@ import javax.imageio.ImageIO;
  */
 public class GameController {
     
-    @FXML private AnchorPane board;
+    @FXML private BorderPane board;
     @FXML private Button btnLoadMap;
     
     @FXML @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void initialize() {
         btnLoadMap.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
-            ExtensionFilter extFilterJPG = new ExtensionFilter("JPG files (*.jpg)", "*.JPG");
-            ExtensionFilter extFilterPNG = new ExtensionFilter("PNG files (*.png)", "*.PNG");
-            fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
+            final ExtensionFilter extFilterJPG = new ExtensionFilter("JPG files (*.jpg)", "*.JPG");
+            final ExtensionFilter extFilterPNG = new ExtensionFilter("PNG files (*.png)", "*.PNG");
+            fileChooser.getExtensionFilters().addAll(extFilterPNG, extFilterJPG);
             
             try {
                 File file = fileChooser.showOpenDialog(Launcher.getStage());
-                Image image = SwingFXUtils.toFXImage(ImageIO.read(file), null);
-                
-                ImageView imageView = new ImageView(image);
-                board.getChildren().add(imageView);
-                imageView.setPreserveRatio(true);
-                imageView.fitWidthProperty().bind(board.widthProperty());
+                if (file != null) {
+                    Image image = SwingFXUtils.toFXImage(ImageIO.read(file), null);
+                    ImageView imageView = new ImageView(image);
+                    
+                    board.setCenter(imageView);
+                    imageView.setPreserveRatio(true);
+                    imageView.fitWidthProperty().bind(board.widthProperty());
+                    imageView.fitHeightProperty().bind(board.heightProperty());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
