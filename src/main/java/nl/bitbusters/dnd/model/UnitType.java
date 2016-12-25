@@ -9,6 +9,6 @@ package nl.bitbusters.dnd.model;
 public enum UnitType {
 
     PLAYER,
-    MONSTER;
-    
+    MONSTER,
+    NPC;
 }

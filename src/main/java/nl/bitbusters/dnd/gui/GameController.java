@@ -128,7 +128,7 @@ public class GameController {
             mapSprite.setFitHeight(30);
             mapSprite.setFitWidth(30);
             
-            playerTable.getItems().add(new Player("420", sprite, mapSprite));
+            playerTable.getItems().add(new Player("Blaze", 420, sprite, mapSprite));
             board.getChildren().add(mapSprite);
         });
         

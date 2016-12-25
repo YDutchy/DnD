@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 public abstract class Unit {
     
     private String name;
+    private Integer health;
     private Image icon;
     private ImageView sprite;
 
@@ -21,8 +22,9 @@ public abstract class Unit {
      * @param icon Icon image of unit
      * @param sprite Map sprite of unit
      */
-    public Unit(String name, Image icon, ImageView sprite) {
+    public Unit(String name, Integer health, Image icon, ImageView sprite) {
         this.name = name;
+        this.health = health;
         this.icon = icon;
         this.sprite = sprite;
     }
@@ -33,6 +35,14 @@ public abstract class Unit {
     
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public Integer getHealth() {
+        return health;
+    }
+    
+    public void setHealth(Integer health) {
+        this.health = health;
     }
     
     public Image getIcon() {

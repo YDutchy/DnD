@@ -10,8 +10,8 @@ import javafx.scene.image.ImageView;
  */
 public class Player extends Unit {
 
-    public Player(String name, Image icon, ImageView sprite) {
-        super(name, icon, sprite);
+    public Player(String name, Integer health, Image icon, ImageView sprite) {
+        super(name, health, icon, sprite);
     }
 
     @Override

@@ -10,8 +10,8 @@ import javafx.scene.image.ImageView;
  */
 public class Monster extends Unit {
 
-    public Monster(String name, Image icon, ImageView sprite) {
-        super(name, icon, sprite);
+    public Monster(String name, Integer health, Image icon, ImageView sprite) {
+        super(name, health, icon, sprite);
     }
 
     @Override
