@@ -40,6 +40,12 @@ public class GameController {
      * Left pane.
      */
     @FXML private Button btnAddPlayer;
+    @FXML private Button btnChangeFire;
+    @FXML private Button btnChangeCold;
+    @FXML private Button btnChangePoison;
+    @FXML private Button btnChangeProne;
+    @FXML private Button btnChangeStun;
+    @FXML private Button btnChangeNecro;
     @FXML private TableView<Unit> playerTable;
     @FXML private TableColumn<Unit, String> playerTableName;
     @FXML private TableColumn<Unit, String> playerTableAffliction;
@@ -137,7 +143,7 @@ public class GameController {
             playerTable.getItems().add(new Player("Blaze", 420, "none", sprite, mapSprite));
             board.getChildren().add(mapSprite);
         });
-        
+                
         playerTable.setFocusTraversable(false);
     }
     
