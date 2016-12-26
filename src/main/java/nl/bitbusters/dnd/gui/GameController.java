@@ -1,6 +1,5 @@
 package nl.bitbusters.dnd.gui;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
@@ -63,16 +62,16 @@ public class GameController {
                 ImageView selected = playerTable.getSelectionModel().getSelectedItem().getMapSprite();
                 switch (event.getCode()) {
                     case LEFT:
-                        selected.setX(selected.getX() - 8);
+                        moveOnMap(selected, -8, 0);
                         break;
                     case RIGHT:
-                        selected.setX(selected.getX() + 8);
+                        moveOnMap(selected, 8, 0);
                         break;
                     case UP:
-                        selected.setY(selected.getY() - 8);
+                        moveOnMap(selected, 0, -8);
                         break;
                     case DOWN:
-                        selected.setY(selected.getY() + 8);
+                        moveOnMap(selected, 0, 8);
                         break;
                     default:
                         break;
@@ -104,6 +103,7 @@ public class GameController {
                     imageView.setPreserveRatio(true);
                     imageView.fitWidthProperty().bind(board.widthProperty());
                     imageView.fitHeightProperty().bind(board.heightProperty());
+                    imageView.toBack();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -117,8 +117,9 @@ public class GameController {
      */
     private void initPlayerTable() {
         playerTableName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        
-        playerTableAffliction.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAffliction()));
+        playerTableAffliction.setCellValueFactory(cellData -> {
+            return new SimpleStringProperty(cellData.getValue().getAffliction());
+        });
         
         playerTableIcon.setCellValueFactory(cellData -> {
             final ImageView icon = new ImageView(cellData.getValue().getIcon());
@@ -138,6 +139,33 @@ public class GameController {
         });
         
         playerTable.setFocusTraversable(false);
+    }
+    
+    /**
+     * Moves the ImageView sprite across the map (a.k.a. {@link #board}), adhering
+     * to its boundaries.
+     * @param sprite Sprite to move
+     * @param offsetX offset in X direction
+     * @param offsetY offset in Y direction
+     */
+    private void moveOnMap(ImageView sprite, int offsetX, int offsetY) {
+        assert board.equals(sprite.getParent());
+        
+        if (sprite.getX() + sprite.getFitWidth() + offsetX > board.getWidth()) {
+            sprite.setX(board.getWidth() - sprite.getFitWidth());
+        } else if (sprite.getX() + offsetX < 0) {
+            sprite.setX(0);
+        } else {
+            sprite.setX(sprite.getX() + offsetX);
+        }
+        
+        if (sprite.getY() + sprite.getFitHeight() + offsetY > board.getHeight()) {
+            sprite.setY(board.getHeight() - sprite.getFitHeight());
+        } else if (sprite.getY() + offsetY < 0) {
+            sprite.setY(0);
+        } else {
+            sprite.setY(sprite.getY() + offsetY);
+        }
     }
 
     /**
