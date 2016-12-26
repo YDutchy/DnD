@@ -12,6 +12,7 @@ public abstract class Unit {
     
     private String name;
     private Integer health;
+    private String affliction;
     private Image icon;
     private ImageView sprite;
 
@@ -22,9 +23,10 @@ public abstract class Unit {
      * @param icon Icon image of unit
      * @param sprite Map sprite of unit
      */
-    public Unit(String name, Integer health, Image icon, ImageView sprite) {
+    public Unit(String name, Integer health, String affliction, Image icon, ImageView sprite) {
         this.name = name;
         this.health = health;
+        this.affliction = affliction;
         this.icon = icon;
         this.sprite = sprite;
     }
@@ -63,4 +65,11 @@ public abstract class Unit {
     
     public abstract UnitType getType();
 
+    public String getAffliction() {
+        return affliction;
+    }
+
+    public void setAffliction(String affliction) {
+        this.affliction = affliction;
+    }
 }

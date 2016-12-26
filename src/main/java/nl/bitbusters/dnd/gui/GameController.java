@@ -1,5 +1,6 @@
 package nl.bitbusters.dnd.gui;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
@@ -42,6 +43,7 @@ public class GameController {
     @FXML private Button btnAddPlayer;
     @FXML private TableView<Unit> playerTable;
     @FXML private TableColumn<Unit, String> playerTableName;
+    @FXML private TableColumn<Unit, String> playerTableAffliction;
     @FXML private TableColumn<Unit, ImageView> playerTableIcon;
     
     @FXML @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -115,6 +117,9 @@ public class GameController {
      */
     private void initPlayerTable() {
         playerTableName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        
+        playerTableAffliction.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAffliction()));
+        
         playerTableIcon.setCellValueFactory(cellData -> {
             final ImageView icon = new ImageView(cellData.getValue().getIcon());
             icon.setFitHeight(20);
@@ -128,7 +133,7 @@ public class GameController {
             mapSprite.setFitHeight(30);
             mapSprite.setFitWidth(30);
             
-            playerTable.getItems().add(new Player("Blaze", 420, sprite, mapSprite));
+            playerTable.getItems().add(new Player("Blaze", 420, "none", sprite, mapSprite));
             board.getChildren().add(mapSprite);
         });
         
