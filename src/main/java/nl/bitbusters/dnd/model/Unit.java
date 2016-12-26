@@ -1,5 +1,7 @@
 package nl.bitbusters.dnd.model;
 
+import java.util.ArrayList;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -12,7 +14,7 @@ public abstract class Unit {
     
     private String name;
     private Integer health;
-    private String affliction;
+    private ArrayList<String> affliction;
     private Image icon;
     private ImageView sprite;
 
@@ -23,7 +25,7 @@ public abstract class Unit {
      * @param icon Icon image of unit
      * @param sprite Map sprite of unit
      */
-    public Unit(String name, Integer health, String affliction, Image icon, ImageView sprite) {
+    public Unit(String name, Integer health, ArrayList<String> affliction, Image icon, ImageView sprite) {
         this.name = name;
         this.health = health;
         this.affliction = affliction;
@@ -65,11 +67,11 @@ public abstract class Unit {
     
     public abstract UnitType getType();
 
-    public String getAffliction() {
+    public ArrayList<String> getAffliction() {
         return affliction;
     }
 
-    public void setAffliction(String affliction) {
+    public void setAffliction(ArrayList<String> affliction) {
         this.affliction = affliction;
     }
 }
