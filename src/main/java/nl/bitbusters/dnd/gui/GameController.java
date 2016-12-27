@@ -6,13 +6,14 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.bitbusters.dnd.Launcher;
@@ -50,7 +51,7 @@ public class GameController {
     @FXML private Button btnChangeNecro;
     @FXML private TableView<Unit> playerTable;
     @FXML private TableColumn<Unit, String> playerTableName;
-    @FXML private TableColumn<Unit, String> playerTableAffliction;
+    @FXML private TableColumn<Unit, VBox> playerTableAffliction;
     @FXML private TableColumn<Unit, ImageView> playerTableIcon;
 
     @FXML @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -69,20 +70,20 @@ public class GameController {
             if (playerTable.getSelectionModel().getSelectedItem() != null) {
                 ImageView selected = playerTable.getSelectionModel().getSelectedItem().getMapSprite();
                 switch (event.getCode()) {
-                case LEFT:
-                    moveOnMap(selected, -8, 0);
-                    break;
-                case RIGHT:
-                    moveOnMap(selected, 8, 0);
-                    break;
-                case UP:
-                    moveOnMap(selected, 0, -8);
-                    break;
-                case DOWN:
-                    moveOnMap(selected, 0, 8);
-                    break;
-                default:
-                    break;
+                    case LEFT:
+                        moveOnMap(selected, -8, 0);
+                        break;
+                    case RIGHT:
+                        moveOnMap(selected, 8, 0);
+                        break;
+                    case UP:
+                        moveOnMap(selected, 0, -8);
+                        break;
+                    case DOWN:
+                        moveOnMap(selected, 0, 8);
+                        break;
+                    default:
+                        break;
                 }
                 selected.setFocusTraversable(true);
                 selected.requestFocus();
@@ -126,7 +127,11 @@ public class GameController {
     private void initPlayerTable() {
         playerTableName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         playerTableAffliction.setCellValueFactory(cellData -> {
-            return new SimpleStringProperty(cellData.getValue().getAffliction().toString());
+            VBox box = new VBox();
+            for (String effect : cellData.getValue().getAffliction()) {
+                box.getChildren().add(new Label(effect));
+            }
+            return new SimpleObjectProperty<VBox>(box);
         });
 
         playerTableIcon.setCellValueFactory(cellData -> {
@@ -146,55 +151,29 @@ public class GameController {
             board.getChildren().add(mapSprite);
         });
 
-        btnChangeCold.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Frozen")) {
-                playerTable.getItems().get(0).getAffliction().remove("Frozen");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Frozen");
-            }
-        });
-
-        btnChangeFire.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Burned")) {
-                playerTable.getItems().get(0).getAffliction().remove("Burned");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Burned");
-            }
-        });
-        
-        btnChangeNecro.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Necro")) {
-                playerTable.getItems().get(0).getAffliction().remove("Necro");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Necro");
-            }
-        });
-        
-        btnChangePoison.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Poison")) {
-                playerTable.getItems().get(0).getAffliction().remove("Poison");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Poison");
-            }
-        });
-        
-        btnChangeProne.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Prone")) {
-                playerTable.getItems().get(0).getAffliction().remove("Prone");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Prone");
-            }
-        });
-        
-        btnChangeStun.setOnAction(cellData -> {
-            if (playerTable.getItems().get(0).getAffliction().contains("Stunned")) {
-                playerTable.getItems().get(0).getAffliction().remove("Stunned");
-            } else {
-                playerTable.getItems().get(0).getAffliction().add("Stunned");
-            }
-        });
+        btnChangeCold.setOnAction(event -> setEffectOnSelected("Frozen"));
+        btnChangeFire.setOnAction(event -> setEffectOnSelected("Burned"));
+        btnChangeNecro.setOnAction(event -> setEffectOnSelected("Necro"));
+        btnChangePoison.setOnAction(event -> setEffectOnSelected("Poisoned"));
+        btnChangeProne.setOnAction(event -> setEffectOnSelected("Prone"));
+        btnChangeStun.setOnAction(event -> setEffectOnSelected("Stunned"));
         
         playerTable.setFocusTraversable(false);
+    }
+    
+    /**
+     * Toggles an effect on the selected Unit in the player table.
+     * @param effect the effect to be toggled.
+     */
+    private void setEffectOnSelected(String effect) {
+        if (playerTable.getSelectionModel().getSelectedItem() != null) {
+            if (playerTable.getSelectionModel().getSelectedItem().getAffliction().contains(effect)) {
+                playerTable.getSelectionModel().getSelectedItem().getAffliction().remove(effect);
+            } else {
+                playerTable.getSelectionModel().getSelectedItem().getAffliction().add(effect);
+            }
+            playerTable.refresh();
+        }
     }
 
     /**
