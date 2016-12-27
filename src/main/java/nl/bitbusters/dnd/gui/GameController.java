@@ -159,6 +159,13 @@ public class GameController {
         playerTable.setFocusTraversable(false);
     }
     
+    /**
+     * Creates a map sprite with the given image and sets the proper
+     * size and event handlers.
+     * 
+     * @param sprite image to be shown as sprite
+     * @return an ImageView ready to add to the map.
+     */
     private ImageView createMapSprite(Image sprite) {
         ImageView mapSprite = new ImageView(sprite);
         mapSprite.setFitHeight(30);

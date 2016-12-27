@@ -1,9 +1,9 @@
 package nl.bitbusters.dnd.model;
 
-import java.util.ArrayList;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.util.List;
 
 /**
  * 
@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
  */
 public class NPC extends Unit {
 
-    public NPC(String name, Integer health, ArrayList<String> affliction, Image icon, ImageView sprite) {
+    public NPC(String name, Integer health, List<String> affliction, Image icon, ImageView sprite) {
         super(name, health, affliction, icon, sprite);
     }
 

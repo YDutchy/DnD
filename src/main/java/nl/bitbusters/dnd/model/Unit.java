@@ -1,9 +1,9 @@
 package nl.bitbusters.dnd.model;
 
-import java.util.ArrayList;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.util.List;
 
 /**
  * Abstract class to describe the base properties of a unit able to appear on the map.
@@ -14,7 +14,7 @@ public abstract class Unit {
     
     private String name;
     private Integer health;
-    private ArrayList<String> affliction;
+    private List<String> affliction;
     private Image icon;
     private ImageView sprite;
 
@@ -25,7 +25,7 @@ public abstract class Unit {
      * @param icon Icon image of unit
      * @param sprite Map sprite of unit
      */
-    public Unit(String name, Integer health, ArrayList<String> affliction, Image icon, ImageView sprite) {
+    public Unit(String name, Integer health, List<String> affliction, Image icon, ImageView sprite) {
         this.name = name;
         this.health = health;
         this.affliction = affliction;
@@ -67,11 +67,11 @@ public abstract class Unit {
     
     public abstract UnitType getType();
 
-    public ArrayList<String> getAffliction() {
+    public List<String> getAffliction() {
         return affliction;
     }
 
-    public void setAffliction(ArrayList<String> affliction) {
+    public void setAffliction(List<String> affliction) {
         this.affliction = affliction;
     }
 }
