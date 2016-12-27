@@ -143,9 +143,7 @@ public class GameController {
 
         btnAddPlayer.setOnAction(event -> {
             Image sprite = new Image("http://orig07.deviantart.net/f9d0/f/2009/219/8/0/contra_sprite_player_1_by_ink_geckos.jpg");
-            ImageView mapSprite = new ImageView(sprite);
-            mapSprite.setFitHeight(30);
-            mapSprite.setFitWidth(30);
+            ImageView mapSprite = createMapSprite(sprite);
 
             playerTable.getItems().add(new Player("Blaze", 420, new ArrayList<String>(), sprite, mapSprite));
             board.getChildren().add(mapSprite);
@@ -159,6 +157,33 @@ public class GameController {
         btnChangeStun.setOnAction(event -> setEffectOnSelected("Stunned"));
         
         playerTable.setFocusTraversable(false);
+    }
+    
+    private ImageView createMapSprite(Image sprite) {
+        ImageView mapSprite = new ImageView(sprite);
+        mapSprite.setFitHeight(30);
+        mapSprite.setFitWidth(30);
+        
+        mapSprite.setOnMouseDragged(mouseEvent -> { //dragging
+            mapSprite.setX(mouseEvent.getX());
+            mapSprite.setY(mouseEvent.getY());
+        });
+        
+        mapSprite.setOnMouseReleased(mouseEvent -> { //dropping
+            if (mouseEvent.getX() < 0) {
+                mapSprite.setX(0);
+            } else if (mouseEvent.getX() > board.getWidth() - mapSprite.getFitWidth()) {
+                mapSprite.setX(board.getWidth() - mapSprite.getFitWidth());
+            }
+            
+            if (mouseEvent.getY() < 0) {
+                mapSprite.setY(0);
+            } else if (mouseEvent.getY() > board.getHeight() - mapSprite.getFitHeight()) {
+                mapSprite.setY(board.getHeight() - mapSprite.getFitHeight());
+            }
+        });
+        
+        return mapSprite;
     }
     
     /**
