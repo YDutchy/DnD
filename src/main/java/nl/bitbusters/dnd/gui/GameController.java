@@ -9,11 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.bitbusters.dnd.Launcher;
@@ -86,7 +89,6 @@ public class GameController {
                         break;
                 }
                 selected.setFocusTraversable(true);
-                selected.requestFocus();
             }
             event.consume();
         });
@@ -125,7 +127,23 @@ public class GameController {
      * and the Add Player button found below it.
      */
     private void initPlayerTable() {
+        playerTable.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+            if (oldValue != null && oldValue.getMapSprite() != null) {
+                oldValue.getMapSprite().setEffect(null);
+            }
+            if (newValue != null && newValue.getMapSprite() != null) {
+                newValue.getMapSprite().setEffect(new DropShadow(15, Color.RED));
+            }
+        });
+        
+        playerTableName.setCellFactory(TextFieldTableCell.forTableColumn());
         playerTableName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        
+        playerTableName.setOnEditCommit(event -> {
+            event.getRowValue().setName(event.getNewValue());
+            playerTable.setFocusTraversable(false);
+        });
+        
         playerTableAffliction.setCellValueFactory(cellData -> {
             VBox box = new VBox();
             for (String effect : cellData.getValue().getAffliction()) {
