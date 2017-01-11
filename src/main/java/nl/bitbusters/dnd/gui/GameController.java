@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -19,13 +20,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import nl.bitbusters.dnd.Launcher;
 import nl.bitbusters.dnd.model.Player;
 import nl.bitbusters.dnd.model.Unit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -70,8 +72,9 @@ public class GameController {
      */
     private void initKeyBoardControl() {
         Launcher.getRootLayout().setOnKeyPressed(event -> {
-            if (playerTable.getSelectionModel().getSelectedItem() != null) {
-                ImageView selected = playerTable.getSelectionModel().getSelectedItem().getMapSprite();
+            Unit selectedUnit = playerTable.getSelectionModel().getSelectedItem();
+            if (selectedUnit != null && selectedUnit.getMapSprite() != null) {
+                ImageView selected = selectedUnit.getMapSprite();
                 switch (event.getCode()) {
                     case LEFT:
                         moveOnMap(selected, -8, 0);
@@ -160,11 +163,9 @@ public class GameController {
         });
 
         btnAddPlayer.setOnAction(event -> {
-            Image sprite = new Image("http://orig07.deviantart.net/f9d0/f/2009/219/8/0/contra_sprite_player_1_by_ink_geckos.jpg");
-            ImageView mapSprite = createMapSprite(sprite);
-
-            playerTable.getItems().add(new Player("Blaze", 420, new ArrayList<String>(), sprite, mapSprite));
-            board.getChildren().add(mapSprite);
+            Player player = new Player();
+            showEditUnitDialog(player);
+            playerTable.getItems().add(player);
         });
 
         btnChangeCold.setOnAction(event -> setEffectOnSelected("Frozen"));
@@ -179,12 +180,12 @@ public class GameController {
     
     /**
      * Creates a map sprite with the given image and sets the proper
-     * size and event handlers.
+     * size and event handlers. It does not add this to the map though.
      * 
      * @param sprite image to be shown as sprite
      * @return an ImageView ready to add to the map.
      */
-    private ImageView createMapSprite(Image sprite) {
+    public ImageView createMapSprite(Image sprite) {
         ImageView mapSprite = new ImageView(sprite);
         mapSprite.setFitHeight(30);
         mapSprite.setFitWidth(30);
@@ -209,6 +210,24 @@ public class GameController {
         });
         
         return mapSprite;
+    }
+    
+    /**
+     * Changes the current map sprite of the given unit to the given new sprite.
+     * If the unit does not have a map sprite (i.e. it is <code>null</code>), then
+     * the new sprite is simply set ('added') as its map sprite.
+     * 
+     * @param unit the unit to have its map sprite changed
+     * @param newSprite the new map sprite of the given unit.
+     */
+    public void changeMapSprite(Unit unit, ImageView newSprite) {
+        if (unit.getMapSprite() != null) {
+            board.getChildren().remove(unit.getMapSprite());
+        }
+        board.getChildren().add(newSprite);
+        
+        unit.setMapSprite(newSprite);
+        playerTable.refresh();
     }
     
     /**
@@ -250,6 +269,34 @@ public class GameController {
             sprite.setY(0);
         } else {
             sprite.setY(sprite.getY() + offsetY);
+        }
+    }
+    
+    /**
+     * Shows the menu to add or edit a unit.
+     * @param unit the unit to edit. Since {@link Unit} cannot simply be instantiated, this <b>cannot</b>
+     *      be <code>null</code>
+     */
+    public void showEditUnitDialog(Unit unit) {
+        assert unit != null;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Launcher.class.getResource("view/editUnitDialogView.fxml"));
+            
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add / edit unit");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(Launcher.getStage());
+            dialogStage.setScene(new Scene(loader.load()));
+            
+            EditUnitDialogController controller = loader.getController();
+            controller.setGameController(this);
+            controller.setDialogStage(dialogStage);
+            controller.setUnit(unit);
+            
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

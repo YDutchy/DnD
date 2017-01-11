@@ -11,6 +11,10 @@ import java.util.List;
  * @author Bart
  */
 public class Player extends Unit {
+    
+    public Player() {
+        super();
+    }
 
     public Player(String name, Integer health, List<String> affliction, Image icon, ImageView sprite) {
         super(name, health, affliction, icon, sprite);

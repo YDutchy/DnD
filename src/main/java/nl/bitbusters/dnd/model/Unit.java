@@ -3,6 +3,7 @@ package nl.bitbusters.dnd.model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,11 +18,29 @@ public abstract class Unit {
     private List<String> affliction;
     private Image icon;
     private ImageView sprite;
+    
+    /**
+     * Simple constructor for a Unit. This initialises its variables as follows: 
+     * <ul>
+     *   <li>{@link #name}: empty string
+     *   <li>{@link #health}: 0
+     *   <li>{@link #affliction}: an empty list
+     *   <li>{@link #icon}: <code>null</code>
+     *   <li>{@link #sprite}: <code>null</code>
+     * </ul>
+     */
+    public Unit() {
+        this.name = "";
+        this.health = 0;
+        this.affliction = new ArrayList<>();
+    }
 
     /**
      * Constructor for a Unit. Needs a name, icon image and map sprite.
      * 
      * @param name Name of unit
+     * @param health Initial health of the unit
+     * @param affliction Initial status affects of the unit
      * @param icon Icon image of unit
      * @param sprite Map sprite of unit
      */
