@@ -181,6 +181,7 @@ public class GameController {
             Player player = new Player();
             if (showEditUnitDialog(player)) {
                 playerTable.getItems().add(player);
+                playerTable.getSelectionModel().select(player);
             }
         });
 

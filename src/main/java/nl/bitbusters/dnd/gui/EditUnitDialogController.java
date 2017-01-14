@@ -29,7 +29,6 @@ public final class EditUnitDialogController {
     
     @FXML private Button btnOK;
     @FXML private Button btnCancel;
-    @FXML private Button btnDefaultIcon;
     @FXML private TextField nameField;
     @FXML private ImageView spriteView;
     
@@ -74,11 +73,6 @@ public final class EditUnitDialogController {
             }
         });
         
-        btnDefaultIcon.setOnAction(event -> {
-            tempImage = new Image("http://orig07.deviantart.net/f9d0/f/2009/219/8/0/contra_sprite_player_1_by_ink_geckos.jpg");
-            spriteView.setImage(tempImage);
-        });
-        
         btnCancel.requestFocus();
     }
     
@@ -110,6 +104,10 @@ public final class EditUnitDialogController {
      */
     public void setUnit(Unit unit) {
         this.unit = unit;
+        if (unit.getIcon() == null) {
+            tempImage = new Image("sprites/default.jpg");
+            unit.setIcon(tempImage);
+        }
         
         nameField.setText(unit.getName());
         spriteView.setImage(unit.getIcon());
