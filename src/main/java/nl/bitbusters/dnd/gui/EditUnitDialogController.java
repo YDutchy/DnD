@@ -37,6 +37,7 @@ public final class EditUnitDialogController {
     private Stage dialogStage;
     private Unit unit;
     
+    private boolean okClicked;
     private Image tempImage;
 
     /**
@@ -46,6 +47,7 @@ public final class EditUnitDialogController {
     public void initialize() {
         btnOK.setOnAction(event -> {
             save();
+            okClicked = true;
             dialogStage.close();
         });
         
@@ -126,6 +128,14 @@ public final class EditUnitDialogController {
             gameController.changeMapSprite(unit, mapSprite);
         }
         
+    }
+    
+    /**
+     * Returns true iff the dialog was closed using the OK button.
+     * @return true iff the dialog was closed using the OK button.
+     */
+    public boolean isOkClicked() {
+        return okClicked;
     }
 
 }

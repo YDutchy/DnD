@@ -9,8 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,8 +26,10 @@ import nl.bitbusters.dnd.Launcher;
 import nl.bitbusters.dnd.model.Player;
 import nl.bitbusters.dnd.model.Unit;
 
+
 import java.io.File;
 import java.io.IOException;
+
 
 import javax.imageio.ImageIO;
 
@@ -62,6 +64,7 @@ public class GameController {
     @FXML @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void initialize() {
         initPlayerTable();
+        initPlayerTableButtons();
         initMap();
         initKeyBoardControl();
     }
@@ -130,6 +133,17 @@ public class GameController {
      * and the Add Player button found below it.
      */
     private void initPlayerTable() {
+        playerTable.setRowFactory(tableView -> { //allows unit editing by double click in table.
+            TableRow<Unit> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() >= 2 && !row.isEmpty()) {
+                    showEditUnitDialog(row.getItem());
+                    playerTable.refresh();
+                }
+            });
+            return row;
+        });
+        
         playerTable.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
             if (oldValue != null && oldValue.getMapSprite() != null) {
                 oldValue.getMapSprite().setEffect(null);
@@ -139,13 +153,7 @@ public class GameController {
             }
         });
         
-        playerTableName.setCellFactory(TextFieldTableCell.forTableColumn());
         playerTableName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        
-        playerTableName.setOnEditCommit(event -> {
-            event.getRowValue().setName(event.getNewValue());
-            playerTable.setFocusTraversable(false);
-        });
         
         playerTableAffliction.setCellValueFactory(cellData -> {
             VBox box = new VBox();
@@ -161,11 +169,19 @@ public class GameController {
             icon.setFitWidth(20);
             return new SimpleObjectProperty<ImageView>(icon);
         });
-
+        
+        playerTable.setFocusTraversable(false);
+    }
+    
+    /**
+     * Initialises the buttons that may change the player table.
+     */
+    private void initPlayerTableButtons() {
         btnAddPlayer.setOnAction(event -> {
             Player player = new Player();
-            showEditUnitDialog(player);
-            playerTable.getItems().add(player);
+            if (showEditUnitDialog(player)) {
+                playerTable.getItems().add(player);
+            }
         });
 
         btnChangeCold.setOnAction(event -> setEffectOnSelected("Frozen"));
@@ -174,8 +190,6 @@ public class GameController {
         btnChangePoison.setOnAction(event -> setEffectOnSelected("Poisoned"));
         btnChangeProne.setOnAction(event -> setEffectOnSelected("Prone"));
         btnChangeStun.setOnAction(event -> setEffectOnSelected("Stunned"));
-        
-        playerTable.setFocusTraversable(false);
     }
     
     /**
@@ -222,6 +236,8 @@ public class GameController {
      */
     public void changeMapSprite(Unit unit, ImageView newSprite) {
         if (unit.getMapSprite() != null) {
+            newSprite.setX(unit.getMapSprite().getX());
+            newSprite.setY(unit.getMapSprite().getY());
             board.getChildren().remove(unit.getMapSprite());
         }
         board.getChildren().add(newSprite);
@@ -276,8 +292,9 @@ public class GameController {
      * Shows the menu to add or edit a unit.
      * @param unit the unit to edit. Since {@link Unit} cannot simply be instantiated, this <b>cannot</b>
      *      be <code>null</code>
+     * @return true iff the window was closed using the "OK" button.
      */
-    public void showEditUnitDialog(Unit unit) {
+    public boolean showEditUnitDialog(Unit unit) {
         assert unit != null;
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -295,8 +312,11 @@ public class GameController {
             controller.setUnit(unit);
             
             dialogStage.showAndWait();
+            
+            return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
