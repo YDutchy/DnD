@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="800.0" minWidth="1337.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.bitbusters.dnd.gui.GameController">
@@ -15,7 +16,10 @@
          <children>
             <Button fx:id="btnLoadMap" layoutX="887.0" layoutY="650.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Load map..." AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="50.0" />
             <AnchorPane fx:id="board" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="987.0" styleClass="board" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="50.0" />
-            <BorderPane layoutY="50.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="987.0" styleClass="board" visible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="50.0" />
+            <Label layoutX="25.0" layoutY="657.0" text="30 ft." AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="35.0" />
+            <Rectangle fx:id="scaleLine" height="2.0" stroke="BLACK" strokeType="INSIDE" width="200.0" x="25.0" y="20.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" width="5.0" x="25.0" y="40.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="25.0" />
+            <Rectangle fx:id="scaleBound" height="40.0" stroke="BLACK" strokeType="INSIDE" width="5.0" x="225.0" y="40.0" AnchorPane.bottomAnchor="5.0" />
          </children>
       </AnchorPane>
    </center>

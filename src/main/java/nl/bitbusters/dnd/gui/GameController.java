@@ -18,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -26,10 +27,8 @@ import nl.bitbusters.dnd.Launcher;
 import nl.bitbusters.dnd.model.Player;
 import nl.bitbusters.dnd.model.Unit;
 
-
 import java.io.File;
 import java.io.IOException;
-
 
 import javax.imageio.ImageIO;
 
@@ -45,6 +44,8 @@ public class GameController {
      */
     @FXML private AnchorPane board;
     @FXML private Button btnLoadMap;
+    @FXML private Rectangle scaleLine; //scaleLine's width is 30 ft on the map
+    @FXML private Rectangle scaleBound;
 
     /**
      * Left pane.
@@ -124,6 +125,13 @@ public class GameController {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+        
+        scaleLine.widthProperty().bind(scaleBound.xProperty().subtract(scaleLine.xProperty()));
+        scaleBound.setOnMouseDragged(mouseEvent -> {
+            if (mouseEvent.getX() >= 65 && mouseEvent.getX() <= 800) {
+                scaleBound.setX(mouseEvent.getX());
             }
         });
     }
