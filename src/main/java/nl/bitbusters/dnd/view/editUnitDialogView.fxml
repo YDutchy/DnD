@@ -4,7 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.TilePane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.bitbusters.dnd.gui.EditUnitDialogController">
    <children>
@@ -12,6 +14,9 @@
       <TextField fx:id="nameField" layoutX="200.0" layoutY="46.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="46.0" />
       <Label layoutX="51.0" layoutY="102.0" text="Sprite:" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="102.0" />
       <ImageView fx:id="spriteView" fitHeight="40.0" fitWidth="40.0" layoutX="201.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="90.0" />
+      <TilePane fx:id="iconTiles" xmlns:fx="http://javafx.com/fxml" prefHeight="200" prefWidth="200" layoutX="201.0" layoutY="87.0"  AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="90.0">
+    </TilePane> 
+
       <Button fx:id="btnOK" layoutX="100.0" layoutY="340.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="OK" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="95.0" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="340.0" />
       <Button fx:id="btnCancel" layoutX="250.0" layoutY="340.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Cancel" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="205.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="340.0" />
    </children>
