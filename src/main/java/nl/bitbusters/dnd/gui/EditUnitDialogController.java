@@ -14,8 +14,10 @@ import javafx.stage.Stage;
 import nl.bitbusters.dnd.Launcher;
 import nl.bitbusters.dnd.model.Unit;
 
+import java.awt.List;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -38,12 +40,20 @@ public final class EditUnitDialogController {
     
     private boolean okClicked;
     private Image tempImage;
+    
+    private ArrayList<Image> imageList = new ArrayList<Image>();
 
     /**
      * Initialise method used by JavaFX's FXML loader.
      */
     @FXML
     public void initialize() {
+        File dir = new File("src/main/resources/sprites");
+        File[] images = dir.listFiles();
+        for (File image : images) {
+            imageList.add(new Image("sprites/" + image.getName()));
+        }
+        
         btnOK.setOnAction(event -> {
             save();
             okClicked = true;
@@ -105,8 +115,10 @@ public final class EditUnitDialogController {
     public void setUnit(Unit unit) {
         this.unit = unit;
         if (unit.getIcon() == null) {
-            tempImage = new Image("sprites/default.jpg");
-            unit.setIcon(tempImage);
+            for (Image image : imageList) {
+                tempImage = image;
+                unit.setIcon(tempImage);
+            }
         }
         
         nameField.setText(unit.getName());
