@@ -3,6 +3,7 @@ package nl.bitbusters.dnd.model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * 
  * @author Bart
  */
-public class Player extends Unit {
+public class Player extends Unit implements Serializable {
     
     public Player() {
         super();

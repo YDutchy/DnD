@@ -62,9 +62,9 @@ public class ServerTest {
         }).start();
         
         server.start();
-        assertTrue(server.isRunning());
+        assertTrue(server.isConnected());
         server.close();
-        assertFalse(server.isRunning());
+        assertFalse(server.isConnected());
     }
     
     @Test(expected = IOException.class)
