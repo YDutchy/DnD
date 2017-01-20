@@ -2,9 +2,9 @@ package nl.bitbusters.dnd.connectivity;
 
 import nl.bitbusters.dnd.Launcher;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
@@ -23,8 +23,8 @@ public class Client implements AutoCloseable {
     private boolean connected;
     
     private Socket socket;
-    private DataInputStream dataInStream;
-    private DataOutputStream dataOutStream;
+    private ObjectInputStream objectInStream;
+    private ObjectOutputStream objectOutStream;
 
     public Client() {
         connected = false;
@@ -66,12 +66,12 @@ public class Client implements AutoCloseable {
         socket = new Socket(address, port);
         socket.setSoTimeout(readTimeout);
         
-        dataInStream = new DataInputStream(socket.getInputStream());
-        dataOutStream = new DataOutputStream(socket.getOutputStream());
+        objectInStream = new ObjectInputStream(socket.getInputStream());
+        objectOutStream = new ObjectOutputStream(socket.getOutputStream());
         int num = new Random().nextInt(99999);
-        dataOutStream.writeInt(num);
+        objectOutStream.writeInt(num);
         
-        if (dataInStream.readBoolean()) {
+        if (objectInStream.readBoolean()) {
             connected = true;
         } else {
             throw new IOException("Verification on server side failed.");
@@ -82,13 +82,13 @@ public class Client implements AutoCloseable {
     public void close() {
         connected = false;
         try {
-            if (dataInStream != null) {
-                dataInStream.close();
-                dataInStream = null;
+            if (objectInStream != null) {
+                objectInStream.close();
+                objectInStream = null;
             }
-            if (dataInStream != null) {
-                dataOutStream.close();
-                dataOutStream = null;
+            if (objectOutStream != null) {
+                objectOutStream.close();
+                objectOutStream = null;
             }
 
             if (socket != null) {

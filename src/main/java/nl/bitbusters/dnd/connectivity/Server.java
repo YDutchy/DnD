@@ -1,9 +1,9 @@
 package nl.bitbusters.dnd.connectivity;
 
+import javafx.scene.image.Image;
 import nl.bitbusters.dnd.Launcher;
+import nl.bitbusters.dnd.model.Unit;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,12 +25,10 @@ public class Server implements AutoCloseable {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     
-    private DataInputStream dataInStream;
-    private DataOutputStream dataOutStream;
     private ObjectInputStream objectInStream;
     private ObjectOutputStream objectOutStream;
     
-    private boolean running;
+    private boolean connected;
 
     /**
      * Initialises a server on the given port.
@@ -72,33 +70,23 @@ public class Server implements AutoCloseable {
     public void start() throws IOException {
         clientSocket = serverSocket.accept();
         clientSocket.setSoTimeout(readTimeout);
-        dataInStream = new DataInputStream(clientSocket.getInputStream());
-        dataOutStream = new DataOutputStream(clientSocket.getOutputStream());
         objectInStream = new ObjectInputStream(clientSocket.getInputStream());
         objectOutStream = new ObjectOutputStream(clientSocket.getOutputStream());
         
-        if (Launcher.askVerifyConnection(dataInStream.readInt())) {
-            dataOutStream.writeBoolean(true);
+        if (Launcher.askVerifyConnection(objectInStream.readInt())) {
+            objectOutStream.writeBoolean(true);
         } else {
-            dataOutStream.writeBoolean(false);
+            objectOutStream.writeBoolean(false);
             throw new IOException("Verification with user failed. Reset the server to try again.");
         }
         
-        running = true;
+        connected = true;
     }
     
     @Override
     public void close() throws IOException {
-        running = false;
+        connected = false;
         try {
-            if (dataInStream != null) {
-                dataInStream.close();
-                dataInStream = null;
-            }
-            if (dataOutStream != null) {
-                dataOutStream.close();
-                dataOutStream = null;
-            }
             if (objectInStream != null) {
                 objectInStream.close();
                 objectInStream = null;
@@ -129,8 +117,34 @@ public class Server implements AutoCloseable {
      * Returns true iff the server is running.
      * @return true iff the server is running.
      */
-    public boolean isRunning() {
-        return running;
+    public boolean isConnected() {
+        return connected;
+    }
+    
+    /**
+     * Sends a map image to the connected client.
+     * Has no effect if the server is not connected.
+     * @param map the map image to send.
+     * @throws IOException if something goes wrong in sending the map.
+     */
+    public void sendMap(Image map) throws IOException {
+        if (connected) {
+            objectOutStream.writeUTF("map");
+            objectOutStream.writeObject(map);
+        }
+    }
+    
+    /**
+     * Sends a Unit to the connected client.
+     * Has no effect if the server is not connected.
+     * @param unit the unit to send.
+     * @throws IOException if something goes wrong in sending the unit.
+     */
+    public void sendUnit(Unit unit) throws IOException {
+        if (connected) {
+            objectOutStream.writeUTF("unit");
+            objectOutStream.writeObject(unit);
+        }
     }
 
 }

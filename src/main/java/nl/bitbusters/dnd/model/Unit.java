@@ -3,6 +3,7 @@ package nl.bitbusters.dnd.model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * 
  * @author Bart
  */
-public abstract class Unit {
+public abstract class Unit implements Serializable {
     
     private String name;
     private Integer health;

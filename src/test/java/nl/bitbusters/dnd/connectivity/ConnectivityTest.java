@@ -44,13 +44,13 @@ public class ConnectivityTest {
         }).start();
         client.connect("localhost", TEST_PORT);
         
-        assertTrue(server.isRunning());
+        assertTrue(server.isConnected());
         assertTrue(client.isConnected());
         
         server.close();
         client.close();
         
-        assertFalse(server.isRunning());
+        assertFalse(server.isConnected());
         assertFalse(client.isConnected());
     }
 
