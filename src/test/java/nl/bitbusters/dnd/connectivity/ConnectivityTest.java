@@ -88,7 +88,6 @@ public class ConnectivityTest extends Application {
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     public void testConnectClose() throws IOException, InterruptedException {
         launchServer(true);
-        
         client.connect("localhost", TEST_PORT);
         
         assertTrue(server.isConnected());
@@ -109,7 +108,6 @@ public class ConnectivityTest extends Application {
     @Test
     public void testSendMap() throws Throwable {
         launchServer(true);
-        
         client.connect("localhost", TEST_PORT);
         
         Image testImage = new Image("testImage.jpg");
@@ -135,7 +133,6 @@ public class ConnectivityTest extends Application {
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     public void testSendUnit() throws Throwable {
         launchServer(true);
-        
         client.connect("localhost", TEST_PORT);
         
         Image testSprite = new Image("testImage.jpg");

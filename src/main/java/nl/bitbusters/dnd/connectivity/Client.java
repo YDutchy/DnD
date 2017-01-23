@@ -57,7 +57,9 @@ public class Client extends Observable implements AutoCloseable {
     }
     
     /**
-     * Connects the client to a server running on the specified address and a port. 
+     * Connects the client to a server running on the specified address and a port.
+     * The client needs to check its underlying stream for updates periodically. 
+     * A process to do so is run on a separate thread called "Client".
      * 
      * <p>The client and server have a simple three-way handshake:
      * First, the server needs to be running and waiting for a connection. The client
@@ -123,20 +125,43 @@ public class Client extends Observable implements AutoCloseable {
         close();
     }
     
+    /**
+     * Returns true iff the client is connected to the server.
+     * @return true iff the client is connected to the server.
+     */
     public boolean isConnected() {
         return connected;
     }
     
+    /**
+     * Returns the ObjectInputStream which the client reads from.
+     * Only used for testing purposes.
+     * 
+     * @return the ObjectInputStream the client reads from.
+     */
     protected ObjectInputStream getObjectInputStream() {
         return objectInStream;
     }
     
+    /**
+     * Returns the thread which the client's main loop is run on.
+     * Only used for testing purposes.
+     * 
+     * @return the thread the client runs its main loop on.
+     */
     protected Thread getRunLoopThread() {
         return runLoopThread;
     }
     
+    /**
+     * The main loop of the client. As long as the client is connected,
+     * this method will periodically check whether anything new is on the
+     * input stream.
+     * 
+     * @throws IOException in case something goes wrong in reading from the stream.
+     */
     protected void runLoop() throws IOException {
-        while (connected) {
+        while (connected) { //check connected twice due to threading.
             if (connected && objectInStream.available() > 0) {
                 onContact(objectInStream.readUTF());
             } else {
@@ -149,6 +174,12 @@ public class Client extends Observable implements AutoCloseable {
         }
     }
     
+    /**
+     * Determines what happens a message has been sent by the server.
+     * @param message the sent message.
+     * @throws IOException if something goes wrong in reading from the stream.
+     *      or if the message is unknown.
+     */
     private void onContact(String message) throws IOException {
         try {
             switch (message) {
@@ -166,6 +197,13 @@ public class Client extends Observable implements AutoCloseable {
         }
     }
     
+    /**
+     * Determines what happens when the "map" header has been received.
+     * Basically just retrieve the map image from the stream and empty the rest
+     * of the stream. Observers are notified.
+     * @throws ClassNotFoundException see {@link ObjectInputStream#readObject()}
+     * @throws IOException if something goes wrong in reading from the stream.
+     */
     private void onReceiveMap() throws ClassNotFoundException, IOException {
         Image image = SwingFXUtils.toFXImage(ImageIO.read(objectInStream), null);
         
@@ -182,6 +220,13 @@ public class Client extends Observable implements AutoCloseable {
         notifyObservers(image);
     }
     
+    /**
+     * Determines what happens when the "unit" header has been received.
+     * Basically just retrieve the unit from the stream and empty the rest
+     * of the stream. Observers are notified.
+     * @throws ClassNotFoundException see {@link ObjectInputStream#readObject()}
+     * @throws IOException if something goes wrong in reading from the stream.
+     */
     private void onReceiveUnit() throws ClassNotFoundException, IOException {
         Unit unit = (Unit) objectInStream.readObject();
         
