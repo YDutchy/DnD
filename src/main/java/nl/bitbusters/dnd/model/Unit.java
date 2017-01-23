@@ -1,11 +1,17 @@
 package nl.bitbusters.dnd.model;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 /**
  * Abstract class to describe the base properties of a unit able to appear on the map.
@@ -17,8 +23,8 @@ public abstract class Unit implements Serializable {
     private String name;
     private Integer health;
     private List<String> affliction;
-    private Image icon;
-    private ImageView sprite;
+    private transient Image icon;
+    private transient ImageView sprite;
     
     /**
      * Simple constructor for a Unit. This initialises its variables as follows: 
@@ -93,5 +99,15 @@ public abstract class Unit implements Serializable {
 
     public void setAffliction(List<String> affliction) {
         this.affliction = affliction;
+    }
+    
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        ImageIO.write(SwingFXUtils.fromFXImage(icon, null), "png", out);
+    }
+    
+    private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+        in.defaultReadObject();
+        icon = SwingFXUtils.toFXImage(ImageIO.read(in), null);
     }
 }

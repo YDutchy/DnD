@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
@@ -53,8 +53,11 @@ public class ServerTest {
         new Thread(() -> {
             try {
                 Socket client = new Socket("localhost", TEST_PORT);
-                new DataOutputStream(client.getOutputStream()).writeInt(65656);
-                assertTrue(new DataInputStream(client.getInputStream()).readBoolean());
+                ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                oos.writeInt(65656);
+                oos.flush();
+                
+                assertTrue(new ObjectInputStream(client.getInputStream()).readBoolean());
                 client.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,8 +78,11 @@ public class ServerTest {
         new Thread(() -> {
             try {
                 Socket client = new Socket("localhost", TEST_PORT);
-                new DataOutputStream(client.getOutputStream()).writeInt(65656);
-                assertFalse(new DataInputStream(client.getInputStream()).readBoolean());
+                ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                oos.writeInt(65656);
+                oos.flush();
+                
+                assertFalse(new ObjectInputStream(client.getInputStream()).readBoolean());
                 client.close();
             } catch (IOException e) {
                 e.printStackTrace();

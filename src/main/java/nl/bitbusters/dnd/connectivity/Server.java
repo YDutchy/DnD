@@ -1,5 +1,6 @@
 package nl.bitbusters.dnd.connectivity;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import nl.bitbusters.dnd.Launcher;
 import nl.bitbusters.dnd.model.Unit;
@@ -10,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+
+import javax.imageio.ImageIO;
 
 /**
  * Server class that will send map and unit info etc to the client.
@@ -70,31 +73,29 @@ public class Server implements AutoCloseable {
     public void start() throws IOException {
         clientSocket = serverSocket.accept();
         clientSocket.setSoTimeout(readTimeout);
-        objectInStream = new ObjectInputStream(clientSocket.getInputStream());
         objectOutStream = new ObjectOutputStream(clientSocket.getOutputStream());
+        objectInStream = new ObjectInputStream(clientSocket.getInputStream());
         
-        if (Launcher.askVerifyConnection(objectInStream.readInt())) {
+        int veriNum = objectInStream.readInt();
+        if (Launcher.askVerifyConnection(veriNum)) {
             objectOutStream.writeBoolean(true);
+            objectOutStream.flush();
         } else {
             objectOutStream.writeBoolean(false);
+            objectOutStream.flush();
             throw new IOException("Verification with user failed. Reset the server to try again.");
         }
         
         connected = true;
+        System.out.println("Server: Connected to client!");
     }
     
     @Override
     public void close() throws IOException {
         connected = false;
         try {
-            if (objectInStream != null) {
-                objectInStream.close();
-                objectInStream = null;
-            }
-            if (objectOutStream != null) {
-                objectOutStream.close();
-                objectOutStream = null;
-            }
+            objectInStream = null;
+            objectOutStream = null;
             if (clientSocket != null) {
                 clientSocket.close();
                 clientSocket = null;
@@ -130,7 +131,12 @@ public class Server implements AutoCloseable {
     public void sendMap(Image map) throws IOException {
         if (connected) {
             objectOutStream.writeUTF("map");
-            objectOutStream.writeObject(map);
+            ImageIO.write(SwingFXUtils.fromFXImage(map, null), "png", objectOutStream);
+            objectOutStream.flush();
+            
+            if (!objectInStream.readBoolean()) {
+                throw new IOException("Map image not correctly sent!");
+            }
         }
     }
     
@@ -144,6 +150,11 @@ public class Server implements AutoCloseable {
         if (connected) {
             objectOutStream.writeUTF("unit");
             objectOutStream.writeObject(unit);
+            objectOutStream.flush();
+            
+            if (!objectInStream.readBoolean()) {
+                throw new IOException("Unit not correctly sent!");
+            }
         }
     }
 
