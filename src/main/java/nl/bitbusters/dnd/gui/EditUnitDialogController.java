@@ -1,27 +1,21 @@
 package nl.bitbusters.dnd.gui;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import nl.bitbusters.dnd.Launcher;
+
 import nl.bitbusters.dnd.model.Unit;
 
-import java.awt.List;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
+import java.util.List;
 
 /**
  * Controller class for the dialog that allows one to add or edit a unit.
@@ -34,7 +28,6 @@ public final class EditUnitDialogController {
     @FXML private Button btnOK;
     @FXML private Button btnCancel;
     @FXML private TextField nameField;
-    //@FXML private ImageView spriteView;
     @FXML private TilePane iconTiles;
     
     private GameController gameController;
@@ -45,8 +38,7 @@ public final class EditUnitDialogController {
     private Image tempImage;
     private ImageView lastSelected;
     
-    
-    private ArrayList<Image> imageList = new ArrayList<Image>();
+    private List<Image> imageList = new ArrayList<>();
 
     /**
      * Initialise method used by JavaFX's FXML loader.
@@ -55,8 +47,13 @@ public final class EditUnitDialogController {
     public void initialize() {
         File dir = new File("src/main/resources/sprites");
         File[] images = dir.listFiles();
-        for (File image : images) {
-            imageList.add(new Image("sprites/" + image.getName()));
+        for (File file : images) {
+            String name = file.getName();
+            Image image = new Image("sprites/" + name);
+            ImageView spriteView = createIconTile(image, name.substring(0, name.length() - 4));
+            
+            iconTiles.getChildren().add(spriteView);
+            imageList.add(image);
         }
         
         btnOK.setOnAction(event -> {
@@ -68,25 +65,6 @@ public final class EditUnitDialogController {
         btnCancel.setOnAction(event -> {
             dialogStage.close();
         });
-        
-//        spriteView.setOnMouseClicked(event -> {
-//            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() >= 2) {
-//                FileChooser fileChooser = new FileChooser();
-//                final ExtensionFilter extFilterJPG = new ExtensionFilter("JPG files (*.jpg)", "*.JPG");
-//                final ExtensionFilter extFilterPNG = new ExtensionFilter("PNG files (*.png)", "*.PNG");
-//                fileChooser.getExtensionFilters().addAll(extFilterPNG, extFilterJPG);
-//
-//                try {
-//                    File file = fileChooser.showOpenDialog(Launcher.getStage());
-//                    if (file != null) {
-//                        tempImage = SwingFXUtils.toFXImage(ImageIO.read(file), null);
-//                        spriteView.setImage(tempImage);
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
         
         btnCancel.requestFocus();
     }
@@ -120,22 +98,11 @@ public final class EditUnitDialogController {
     public void setUnit(Unit unit) {
         this.unit = unit;
         lastSelected = null;
-        if (unit.getIcon() == null) {
-            for (Image image : imageList) {
-            	ImageView spriteView = new ImageView(image);
-            	iconTiles.getChildren().add(spriteView);                               
-                spriteView.setOnMouseClicked(event -> {
-                    if (event.getButton() == MouseButton.PRIMARY) {
-                    	if(lastSelected != null) {
-                    		lastSelected.setEffect(null);
-                    	}
-                    	lastSelected = spriteView;
-                    	spriteView.setEffect(new DropShadow(15, Color.RED));
-                    	tempImage = image; 
-                    	unit.setIcon(image);
-                    }
-                });
-            }
+        
+        if (unit.getIcon() != null) {
+            lastSelected = createIconTile(unit.getIcon(), "Custom");
+            lastSelected.setEffect(new DropShadow(15, Color.RED));
+            iconTiles.getChildren().add(lastSelected);
         }
         
         nameField.setText(unit.getName());
@@ -163,5 +130,26 @@ public final class EditUnitDialogController {
     public boolean isOkClicked() {
         return okClicked;
     }
-
+    
+    /**
+     * Creates an ImageView to be used as a tile in {@link #iconTiles}.
+     * 
+     * @param image Image to create ImageView from
+     * @param name Name of the sprite (used to attach a tooltip)
+     * @return an icon tile that can now be added to {@linkplain #iconTiles}.
+     */
+    private ImageView createIconTile(Image image, String name) {
+        ImageView spriteView = new ImageView(image);
+        spriteView.setOnMouseClicked(event -> {
+            if (lastSelected != null) {
+                lastSelected.setEffect(null);
+            }
+            lastSelected = spriteView;
+            spriteView.setEffect(new DropShadow(15, Color.RED));
+            tempImage = image;
+        });
+        Tooltip.install(spriteView, new Tooltip(name));
+        return spriteView;
+    }
+    
 }
