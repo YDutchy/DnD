@@ -8,6 +8,7 @@ package nl.bitbusters.dnd;
 public enum Mode {
 
     DM,
-    TV
+    TV,
+    NONE
     
 }
