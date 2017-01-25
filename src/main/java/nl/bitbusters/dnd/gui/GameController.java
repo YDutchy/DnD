@@ -24,6 +24,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import nl.bitbusters.dnd.Launcher;
+import nl.bitbusters.dnd.connectivity.Server;
 import nl.bitbusters.dnd.model.Player;
 import nl.bitbusters.dnd.model.Unit;
 
@@ -38,6 +39,8 @@ import javax.imageio.ImageIO;
  * @author Bart
  */
 public class GameController {
+    
+    private static Server server;
 
     /**
      * Centre pane.
@@ -68,6 +71,16 @@ public class GameController {
         initPlayerTableButtons();
         initMap();
         initKeyBoardControl();
+        
+//        new Thread(() -> {
+//            try {
+//                server = new Server(Launcher.getPort());
+//                server.start();
+//                System.out.println("Server ready");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
     }
 
     /**
@@ -327,6 +340,10 @@ public class GameController {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public static Server getServer() {
+        return server;
     }
 
     /**

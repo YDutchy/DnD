@@ -91,7 +91,7 @@ public class Server implements AutoCloseable {
     }
     
     @Override
-    public void close() throws IOException {
+    public void close() {
         connected = false;
         try {
             objectInStream = null;

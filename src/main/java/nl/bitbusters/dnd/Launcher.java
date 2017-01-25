@@ -9,8 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import nl.bitbusters.dnd.gui.GameController;
+import nl.bitbusters.dnd.gui.TVViewController;
 
 import java.io.IOException;
 
@@ -56,7 +56,7 @@ public class Launcher extends Application {
             GameController.show();
         } else if (mode == Mode.TV) {
             primaryStage.show();
-            GameController.show();
+            TVViewController.show();
         }
     }
     
@@ -105,7 +105,17 @@ public class Launcher extends Application {
         return true;
     }
     
+    /**
+     * Closes the application, including any server or client where present.
+     */
     public static void close() {
+        if (GameController.getServer() != null) {
+            GameController.getServer().close();
+        }
+        if (TVViewController.getClient() != null) {
+            TVViewController.getClient().close();
+        }
+        
         Platform.exit();
         System.exit(0);
     }
